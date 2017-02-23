@@ -10,8 +10,8 @@ npm run start
 
 TODO
 ---
-* Production css (fusebox error)
 * eslint rules no-unused-vars
+* multiple bundles lazy loading
 
 KNOWN ISSUES
 ---

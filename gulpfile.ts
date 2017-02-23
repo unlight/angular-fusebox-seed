@@ -25,6 +25,12 @@ const config = {
     dest: 'build',
     specBundle: 'spec.bundle',
     minify: args.nomin !== true,
+    get hash() {
+        if (this._hash === undefined) {
+            this._hash = this.devMode ? '' : ['', readPkg.sync().version, g.util.date(`yyyymmdd'T'HHMMss`)].join('.');
+        }
+        return this._hash;
+    },
 };
 
 const filePool = new Map();
@@ -67,9 +73,11 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
             // TODO: Cache checking should checking in ChainPLugin.
             // TODO: Forbid check cache if in chain.
             CSSPlugin((() => {
-                // TODO: Use serve option to rename css file for prod.
-                return { };
-                // return { write: !config.devMode };
+                if (config.devMode) return {};
+                return {
+                    group: `style${config.hash}.css`,
+                    outFile: `${config.dest}/style${config.hash}.css`,
+                };
             })()),
         ],
         HTMLPlugin({ useDefault: false }),
@@ -107,15 +115,13 @@ gulp.task('build', (done) => {
         });
 });
 
-gulp.task('build:rev', () => {
-    const {version} = readPkg.sync();
-    const suffix = ['', version, g.util.date("yyyymmdd'T'HHMMss")].join('.');
-    return gulp.src(`${config.dest}/*.{js,css}`)
+gulp.task('bundle:rev', () => {
+    return gulp.src(`${config.dest}/*.js`)
         .pipe(through.obj((file, enc, callback) => {
             del.sync(file.path);
             callback(null, file);
         }))
-        .pipe(g.rename({ suffix }))
+        .pipe(g.rename({ suffix: config.hash }))
         .pipe(gulp.dest(config.dest));
 });
 
@@ -185,6 +191,7 @@ gulp.task('devserver', (done) => {
     if (!config.devMode) {
         return done();
     }
+    // TODO: Other bundles?
     const ds = fuseBox({ config }).devServer(`>main.ts`, {
         port: config.socketPort,
         httpServer: false,
@@ -305,7 +312,7 @@ gulp.task('start', gulp.series(...[
 gulp.task('release', gulp.series(...[
     'clean',
     'build',
-    // 'build:rev',
+    'bundle:rev',
     'htdocs',
 ]));
 
