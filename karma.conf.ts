@@ -26,6 +26,31 @@ module.exports = (config: any) => {
         logLevel: config.LOG_INFO
     });
 
+    if (argv.testresults) {
+        config.set({
+            reporters: ['mocha', 'html', 'junit'],
+            mochaReporter: {
+                symbols: {
+                    success: '+',
+                    info: '#',
+                    warning: '!',
+                    error: '-'
+                }
+            },
+            htmlReporter: {
+                outputDir: __dirname + '/.testresults',
+                namedFiles: true,
+                reportName: 'index',
+                pageTitle: 'JsTest',
+            },
+            junitReporter: {
+                outputDir: __dirname + '/.testresults',
+                outputFile: 'js-junit.xml',
+                useBrowserName: false
+            },
+        });
+    }
+
     if (argv.coverage) {
         const reporterOptions = {
             'text-summary': null,
@@ -54,32 +79,6 @@ module.exports = (config: any) => {
                     exclude: /\.(d|spec|test|bundle|spec-files)\.ts/
                 },
             }
-        });
-    }
-
-    if (argv.reports) {
-
-        config.set({
-            reporters: ['mocha', 'html', 'junit'],
-            mochaReporter: {
-                symbols: {
-                    success: '+',
-                    info: '#',
-                    warning: '!',
-                    error: '-'
-                }
-            },
-            htmlReporter: {
-                outputDir: __dirname + '/.testresults',
-                namedFiles: true,
-                reportName: 'index',
-                pageTitle: 'JsTest',
-            },
-            junitReporter: {
-                outputDir: __dirname + '/.testresults',
-                outputFile: 'js-junit.xml',
-                useBrowserName: false
-            },
         });
     }
 };

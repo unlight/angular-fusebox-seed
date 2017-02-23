@@ -6,10 +6,10 @@
         "importHelpers": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "declaration": true,
+        "declaration": false,
         "outDir": "build/",
         "sourceMap": true,
-        "noUnusedLocals": false,
+        "skipLibCheck": true,
         "lib": [
             "dom",
             "es2015"
