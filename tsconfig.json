@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": true,
+        "outDir": "build/",
+        "sourceMap": true,
+        "noUnusedLocals": false,
+        "lib": [
+            "dom",
+            "es2015"
+        ],
+        "typeRoots": [
+            "node_modules/@types"
+        ]
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "spec.bundle.ts"
+    ],
+    "compileOnSave": false,
+    "buildOnSave": false
+}
