@@ -1,4 +1,4 @@
-{
+module.exports = {
   "env": {
     "browser": true,
     "es6": true,
@@ -6,6 +6,7 @@
     "jasmine": true
   },
   "plugins": [
+    "flowtype",
     "typescript",
     "unicorn",
     "lodash",
@@ -19,14 +20,28 @@
     "eslint:recommended",
     "plugin:unicorn/recommended",
     "plugin:lodash/recommended",
-    "plugin:jasmine/recommended"
+    "plugin:jasmine/recommended",
+    "plugin:flowtype/recommended",
   ],
   "parser": "typescript-eslint-parser",
   "parserOptions": {
     "sourceType": "module"
   },
   "rules": {
+    "no-undef": 0,
     "no-unused-vars": [0, {"vars": "all", "args": "after-used"}],
+    // "typescript/no-unused-vars": 0,
+    "typescript/type-annotation-spacing": 1,
+    "flowtype/no-primitive-constructor-types": 2,
+    "flowtype/no-weak-types": 1,
+    "flowtype/require-parameter-type": [1, {"excludeArrowFunctions": true}],
+    "flowtype/require-return-type": [1, "always", {"annotateUndefined": "never", "excludeArrowFunctions": true}],
+    "flowtype/space-after-type-colon": 1,
+    "flowtype/space-before-generic-bracket": 1,
+    "flowtype/space-before-type-colon": [1, "never"],
+    "flowtype/type-id-match": 0,
+    "flowtype/union-intersection-spacing": 1,
+    "flowtype/use-flow-type": 1,
     "unicorn/no-abusive-eslint-disable": 0,
     "typescript/type-annotation-spacing": 1,
     "wix-editor/augmented-assignment": 1,
@@ -46,15 +61,14 @@
     "perf-standard/no-array-iterators": 0,
     "lodash/prefer-lodash-method": 0,
     "prefer-spread/prefer-object-spread": [1, "includeNearEquivalents"],
-    "no-with": "error",
-    "comma-dangle": ["warn", "only-multiline"],
-    "no-bitwise": ["warn"],
+    "no-with": 2,
+    "comma-dangle": [1, "only-multiline"],
+    "no-bitwise": [1],
     "no-empty-function": 0,
-    "one-var": ["warn", "never"],
+    "one-var": [1, "never"],
     "no-underscore-dangle": 0,
     "space-after-keywords": 0,
     "space-before-keywords": 0,
-    "no-undef": 0,
     "radix": 1,
     "no-console": 1,
     "no-debugger": 1,
@@ -64,8 +78,8 @@
     "no-unsafe-finally": 1,
     "no-this-before-super": 1,
     "constructor-super": 1,
-    "quotes": ["warn", "single", {"allowTemplateLiterals": true}],
-    "semi": ["warn", "always"],
+    "quotes": [1, "single", {"allowTemplateLiterals": true}],
+    "semi": [1, "always"],
     "eqeqeq": 2,
     "block-spacing": [1, "always"],
     "comma-spacing": [1, {"before": false, "after": true}],
@@ -84,6 +98,6 @@
     "no-unexpected-multiline": 2,
     "dot-location": [2, "property"],
     "no-throw-literal": 2,
-    "comma-style": [2, "last"]
+    "comma-style": [2, "last"],
   }
 }

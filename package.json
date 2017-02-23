@@ -23,7 +23,7 @@
     "tschk": "tsc --project . --noEmit --pretty --noUnusedLocals",
     "tschk:watch": "npm run tschk -- --watch",
     "dev": "concurrently -r -k -p \"{name}:\" -n \"t,e,d\" \"npm run tschk:watch\" \"gulp eslint:watch\" \"npm run start\"",
-    "lint": "gulp eslint",
+    "lint": "gulp eslint && npm run tschk",
     "postinstall": "gulp angular:fix_bundles",
     "release:prod": "gulp release --prod"
   },
@@ -51,6 +51,7 @@
     "autoprefixer": "6.7.5",
     "concurrently": "3.3.0",
     "del": "2.2.2",
+    "eslint-plugin-flowtype": "2.30.0",
     "eslint-plugin-jasmine": "2.2.0",
     "eslint-plugin-lodash": "2.3.5",
     "eslint-plugin-lodash-smells": "0.2.0",
@@ -98,7 +99,6 @@
     "ts-node": "2.1.0",
     "tslib": "1.6.0",
     "typescript": "2.1.6",
-    "typescript-eslint-parser": "1.0.3",
-    "vinyl-source-buffer": "1.1.1"
+    "typescript-eslint-parser": "1.0.3"
   }
 }
