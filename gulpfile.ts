@@ -93,6 +93,7 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
         cache: true,
         outFile: `./${config.dest}/${entry}.js`,
         plugins: plugins,
+        alias: angularBundlesAliasMap(),
     };
     if (!config.devMode) {
         if (config.minify) {
@@ -291,7 +292,7 @@ gulp.task('bump', () => {
     let onEnd = () => { };
     if (args.commit) {
         onEnd = () => {
-            const {version} = readPkg.sync();
+            const { version } = readPkg.sync();
             execSync(`git add package.json`);
             execSync(`git commit -m "${version}"`);
         };
@@ -316,17 +317,19 @@ gulp.task('release', gulp.series(...[
     'htdocs',
 ]));
 
-gulp.task('angular:fix_bundles', (done) => {
+function angularBundlesAliasMap() {
     const resolve = require('resolve');
     const packages = [
         '@angular/core/testing',
         '@angular/platform-browser-dynamic/testing',
         '@angular/compiler/testing',
         '@angular/platform-browser/testing',
-    ].forEach(name => {
-        let bundle = resolve.sync(name);
-        let result = Path.join('node_modules', name, 'index.js');
-        fs.createReadStream(bundle).pipe(fs.createWriteStream(result));
-    });
-    done();
-});
+    ];
+    const nodeModulesPath = Path.resolve('node_modules');
+    return _.reduce(packages, (result, value, key) => {
+        let relative = resolve.sync(value)
+            .slice(nodeModulesPath.length + 1)
+            .replace(/\\/g, '/');
+        return result;
+    }, {});
+}
