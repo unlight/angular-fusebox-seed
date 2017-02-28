@@ -35,9 +35,10 @@ const config = {
 
 const filePool = new Map();
 
-const postcssPlugins = _.constant([
+const postcssPlugins = _.constant(_.filter([
     require('autoprefixer')({ browsers: ['last 3 version'] }),
-]);
+    (!config.devMode && config.minify) ? require('postcss-csso') : null
+]));
 
 const fuseBox = _.memoize(function createFuseBox(options = {}) {
     const config: any = _.get(options, 'config');
@@ -53,9 +54,6 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
             /\.component\.scss$/,
             SassPlugin({ sourceMap: false }),
             PostCSS(postcssPlugins()),
-            GulpPlugin([
-                (file) => g.if(!config.devMode, g.csso()),
-            ]),
             {
                 transform: (file: File) => {
                     file.contents = `module.exports = ${JSON.stringify(file.contents)}`;
@@ -67,9 +65,6 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
             /\.scss$/,
             SassPlugin({}),
             PostCSS(postcssPlugins()),
-            GulpPlugin([
-                (file) => g.if(!config.devMode, g.csso()),
-            ]),
             // TODO: Cache checking should checking in ChainPLugin.
             // TODO: Forbid check cache if in chain.
             CSSPlugin((() => {

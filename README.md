@@ -29,6 +29,7 @@ TODO
 
 KNOWN ISSUES
 ---
+* TS 2.2+ https://github.com/monounity/karma-typescript/issues/92
 * ESLint configured with `no-undef: 0`
 * ESLint configured with `no-unused-vars: 0`, TypeScript's `noUnusedLocals` will check that
 * HMR works only for main module
