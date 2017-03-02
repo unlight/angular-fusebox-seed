@@ -3,7 +3,7 @@
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as Path from 'path';
-import { PostCSS, FuseBox, RawPlugin, CSSPlugin, HTMLPlugin, UglifyJSPlugin, SassPlugin, EnvPlugin } from 'fuse-box';
+import { PostCSS, FuseBox, RawPlugin, CSSPlugin, HTMLPlugin, UglifyJSPlugin, SassPlugin } from 'fuse-box';
 import { File } from 'fuse-box/dist/typings/File';
 import { Plugin } from 'fuse-box/dist/typings/WorkflowContext';
 import { EventEmitter } from 'events';
@@ -31,12 +31,6 @@ const config = {
         }
         return this._hash;
     },
-    env: {
-        get NODE_ENV() {
-            if (args.prod === true) return 'production';
-            return 'development';
-        }
-    },
 };
 
 const filePool = new Map();
@@ -52,7 +46,9 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
     const plugins: any[] = [
         [
             /\.ts$/,
-            EnvPlugin(config.env),
+            GulpPlugin([
+                (file) => g.preprocess({ context: config }),
+            ]),
         ],
         [
             /\.component\.scss$/,
