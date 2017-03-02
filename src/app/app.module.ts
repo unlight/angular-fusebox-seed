@@ -5,8 +5,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { HashLocationStrategy, LocationStrategy, APP_BASE_HREF, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-declare const FuseBox;
-
 const routes: Routes = [
     {
         path: 'about', loadChildren: () => {
