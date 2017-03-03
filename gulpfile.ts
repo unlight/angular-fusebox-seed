@@ -88,7 +88,7 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
         cache: true,
         outFile: `./${config.dest}/${entry}.js`,
         plugins: plugins,
-        alias: angularBundlesAliasMap(),
+        // alias: angularBundlesAliasMap(),
     };
     if (!config.devMode) {
         if (config.minify) {
@@ -328,3 +328,18 @@ function angularBundlesAliasMap() {
         return result;
     }, {});
 }
+
+gulp.task('angular:fix_bundles', (done) => {
+    const resolve = require('resolve');
+    const streams = [
+        '@angular/core/testing',
+        '@angular/platform-browser-dynamic/testing',
+        '@angular/compiler/testing',
+        '@angular/platform-browser/testing',
+    ].map(name => {
+        let bundle = resolve.sync(name);
+        let result = Path.join('node_modules', name, 'index.js');
+        return fs.createReadStream(bundle).pipe(fs.createWriteStream(result));
+    });
+    return _.last(streams);
+});
