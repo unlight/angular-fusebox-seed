@@ -4,8 +4,8 @@ import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as Path from 'path';
 import { PostCSS, FuseBox, RawPlugin, CSSPlugin, HTMLPlugin, UglifyJSPlugin, SassPlugin } from 'fuse-box';
-import { File } from 'fuse-box/dist/typings/File';
-import { Plugin } from 'fuse-box/dist/typings/WorkflowContext';
+import { File } from 'fuse-box/dist/typings/core/File';
+import { Plugin } from 'fuse-box/dist/typings/core/WorkflowContext';
 import { EventEmitter } from 'events';
 import del = require('del');
 import through = require('through2');
@@ -54,12 +54,7 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
             /\.component\.scss$/,
             SassPlugin({ sourceMap: false }),
             PostCSS(postcssPlugins()),
-            {
-                transform: (file: File) => {
-                    file.contents = `module.exports = ${JSON.stringify(file.contents)}`;
-                    file.context.emitJavascriptHotReload(file);
-                }
-            }
+            RawPlugin({}),
         ],
         [
             /\.scss$/,
@@ -80,10 +75,7 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
     const settings = {
         homeDir: 'src',
         log: false,
-        sourceMap: {
-            bundleReference: `${entry}.js.map`,
-            outFile: `./${config.dest}/${entry}.js.map`,
-        },
+        sourcemaps: true,
         tsConfig: `${__dirname}/tsconfig.json`,
         cache: true,
         outFile: `./${config.dest}/${entry}.js`,

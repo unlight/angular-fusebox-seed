@@ -11,6 +11,7 @@
     "typescript"
   ],
   "scripts": {
+    "gulp": "ts-node -F node_modules/gulp/bin/gulp",
     "postinstall": "gulp angular:fix_bundles",
     "start": "gulp start",
     "clean": "gulp clean",
@@ -60,7 +61,7 @@
     "eslint-plugin-typescript": "0.1.0",
     "eslint-plugin-unicorn": "2.0.1",
     "eslint-plugin-wix-editor": "1.1.1",
-    "fuse-box": "1.3.122",
+    "fuse-box": "1.3.123",
     "fusebox-gulp-plugin": "1.0.4",
     "fusebox-hmr-style": "0.0.1",
     "fusebox-reload": "1.0.0",
