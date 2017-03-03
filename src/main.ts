@@ -1,7 +1,7 @@
 import 'es6-shim';
 import 'reflect-metadata';
 import 'zone.js/dist/zone';
-import './style.scss';
+import './global.scss';
 // @if devMode
 import 'fusebox-hmr-style';
 import 'fusebox-reload';

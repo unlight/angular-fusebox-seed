@@ -1,4 +1,4 @@
-/// <reference path="index.d.ts" />
+/// <reference path="typings.d.ts" />
 import 'es6-shim';
 import 'reflect-metadata';
 import 'zone.js/dist/zone';
