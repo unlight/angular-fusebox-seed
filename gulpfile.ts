@@ -3,7 +3,7 @@
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as Path from 'path';
-import { PostCSS, FuseBox, RawPlugin, CSSPlugin, HTMLPlugin, UglifyJSPlugin, SassPlugin } from 'fuse-box';
+import { PostCSS, FuseBox, RawPlugin, CSSPlugin, HTMLPlugin, UglifyJSPlugin, SassPlugin, CSSResourcePlugin } from 'fuse-box';
 import { File } from 'fuse-box/dist/typings/core/File';
 import { Plugin } from 'fuse-box/dist/typings/core/WorkflowContext';
 import { EventEmitter } from 'events';
@@ -57,11 +57,8 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
             RawPlugin({}),
         ],
         [
-            /\.scss$/,
             SassPlugin({}),
             PostCSS(postcssPlugins()),
-            // TODO: Cache checking should checking in ChainPLugin.
-            // TODO: Forbid check cache if in chain.
             CSSPlugin((() => {
                 if (config.devMode) return {};
                 return {
