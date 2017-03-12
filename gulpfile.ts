@@ -9,6 +9,7 @@ import { Plugin } from 'fuse-box/dist/typings/core/WorkflowContext';
 import { EventEmitter } from 'events';
 import del = require('del');
 import through = require('through2');
+import { ChainPlugin } from 'fusebox-chain-plugin';
 import { execSync } from 'child_process';
 const readPkg = require('read-pkg');
 const gulp = require('gulp');
@@ -37,11 +38,11 @@ const filePool = new Map();
 
 const postcssPlugins = _.constant(_.filter([
     require('autoprefixer')({ browsers: ['last 3 version'] }),
-    (!config.devMode && config.minify) ? require('postcss-csso') : null
+    (!config.devMode && config.minify) && require('postcss-csso')
 ]));
 
 const fuseBox = _.memoize(function createFuseBox(options = {}) {
-    const config: any = _.get(options, 'config');
+    const config: any = _.get(options, 'config', {});
     const entry = _.get(options, 'entry', 'app');
     const plugins: any[] = [
         [
@@ -50,23 +51,16 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
                 (file) => g.preprocess({ context: config }),
             ]),
         ],
-        [
-            /\.component\.scss$/,
-            SassPlugin({ sourceMap: false }),
-            PostCSS(postcssPlugins()),
-            RawPlugin({}),
-        ],
-        [
-            SassPlugin({}),
-            PostCSS(postcssPlugins()),
-            CSSPlugin((() => {
-                if (config.devMode) return {};
-                return {
-                    group: `style${config.hash}.css`,
-                    outFile: `${config.dest}/style${config.hash}.css`,
-                };
-            })()),
-        ],
+        ChainPlugin({ extension: '.scss', test: /\.scss$/ }, {
+            '.component.scss': [
+                SassPlugin({ sourceMap: false }),
+                RawPlugin({}),
+            ],
+            '.scss': [
+                SassPlugin({}),
+                CSSPlugin(),
+            ]
+        }),
         HTMLPlugin({ useDefault: false }),
     ];
     const settings = {
@@ -77,6 +71,14 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
         cache: true,
         outFile: `./${config.dest}/${entry}.js`,
         plugins: plugins,
+        debug: false,
+        // rollup: {
+        //     bundle: {
+        //         moduleName: 'app',
+        //     },
+        //     entry: 'main.ts',
+        //     treeshake: true,
+        // }
         // alias: angularBundlesAliasMap(),
     };
     if (!config.devMode) {

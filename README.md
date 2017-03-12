@@ -29,7 +29,12 @@ TODO
 
 KNOWN ISSUES
 ---
+* update zone to 0.8.0 when TS 2.2
 * TS 2.2+ https://github.com/monounity/karma-typescript/issues/92
 * ESLint configured with `no-undef: 0`
 * ESLint configured with `no-unused-vars: 0`, TypeScript's `noUnusedLocals` will check that
 * HMR works only for main module
+
+DEBUG
+---
+* `inspect node_modules\gulp\bin\gulp.js build`
