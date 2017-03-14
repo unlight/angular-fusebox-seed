@@ -1,5 +1,6 @@
 /// <reference path="node_modules/@types/node/index.d.ts" />
 /// <reference path="node_modules/typescript/lib/lib.es2015.d.ts" />
+Error.stackTraceLimit = Infinity;
 import * as _ from 'lodash';
 import * as fs from 'fs';
 import * as Path from 'path';
