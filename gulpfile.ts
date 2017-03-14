@@ -10,7 +10,7 @@ import { Plugin } from 'fuse-box/dist/typings/core/WorkflowContext';
 import { EventEmitter } from 'events';
 import del = require('del');
 import through = require('through2');
-import { ChainPlugin } from 'fusebox-chain-plugin';
+const { ChainPlugin } = require('fusebox-chain-plugin');
 import { execSync } from 'child_process';
 const readPkg = require('read-pkg');
 const gulp = require('gulp');
