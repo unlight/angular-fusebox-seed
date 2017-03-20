@@ -1,5 +1,7 @@
 angular-fusebox-seed
 ====================
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/unlight/angular-fusebox-seed.svg)](https://greenkeeper.io/)
 Angular 2 seed project
 
 QUICK START
