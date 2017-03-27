@@ -1,6 +1,6 @@
 /// <reference path="typings.d.ts" />
-import 'es6-shim';
-import 'reflect-metadata';
+import 'core-js/es6';
+import 'core-js/es7';
 import 'zone.js/dist/zone';
 import 'zone.js/dist/long-stack-trace-zone.js';
 import 'zone.js/dist/proxy.js';
