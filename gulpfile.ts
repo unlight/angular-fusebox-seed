@@ -19,6 +19,7 @@ const streamFromPromise = require('stream-from-promise');
 const { GulpPlugin } = require('fusebox-gulp-plugin');
 const args = g.util.env;
 const events = new EventEmitter();
+const { preprocess } = require('preprocess');
 
 const config = {
     devMode: args.prod !== true,
@@ -27,6 +28,7 @@ const config = {
     dest: 'build',
     specBundle: 'spec.bundle',
     minify: args.nomin !== true,
+    cache: args.nocache !== true,
     get hash() {
         if (this._hash === undefined) {
             this._hash = this.devMode ? '' : ['', readPkg.sync().version, g.util.date(`yyyymmdd'T'HHMMss`)].join('.');
@@ -46,12 +48,13 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
     const config: any = _.get(options, 'config', {});
     const entry = _.get(options, 'entry', 'app');
     const plugins: any[] = [
-        [
-            /\.ts$/,
-            GulpPlugin([
-                (file) => g.preprocess({ context: config }),
-            ]),
-        ],
+        {
+            onTypescriptTransform: (file: File) => {
+                if (_.endsWith(file.info.absPath, 'main.ts')) {
+                    file.contents = preprocess(file.contents, config, { type: 'ts' });
+                }
+            }
+        },
         ChainPlugin({ extension: '.scss', test: /\.scss$/ }, {
             '.component.scss': [
                 SassPlugin({ sourceMap: false }),
@@ -69,7 +72,7 @@ const fuseBox = _.memoize(function createFuseBox(options = {}) {
         log: false,
         sourcemaps: true,
         tsConfig: `${__dirname}/tsconfig.json`,
-        cache: true,
+        cache: config.cache,
         outFile: `./${config.dest}/${entry}.js`,
         plugins: plugins,
         debug: false,
@@ -129,7 +132,7 @@ gulp.task('spec:watch', (done) => {
 });
 
 gulp.task('spec:prepare', () => {
-    let fileList = [];
+    const fileList = [];
     return gulp.src('src/**/*.spec.ts', { read: false })
         .pipe(through.obj((file, enc, cb) => {
             fileList.push(file.path);
@@ -137,8 +140,7 @@ gulp.task('spec:prepare', () => {
         }, function(cb: any) {
             let contents = fileList
                 .map(p => Path.relative('./src', p))
-                .map(p => `./${p.replace(/\\/g, '/')}`)
-                .map(p => p.replace(/\.ts$/, ''))
+                .map(p => `./${p.replace(/\\/g, '/').replace(/\.ts$/, '')}`)
                 .map(p => `require('${p}')`)
                 .join('\n')
             let file = new g.util.File({ contents: Buffer.from(contents), path: '~tmp.spec-files.ts' });
@@ -328,6 +330,8 @@ gulp.task('angular:fix_bundles', (done) => {
         '@angular/platform-browser-dynamic/testing',
         '@angular/compiler/testing',
         '@angular/platform-browser/testing',
+        '@angular/router/testing',
+        '@angular/common/testing',
     ].map(name => {
         let bundle = resolve.sync(name);
         let result = Path.join('node_modules', name, 'index.js');
